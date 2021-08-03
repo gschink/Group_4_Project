@@ -1,0 +1,107 @@
+---
+title: "Final Project: Revitalizing the Entertainment Industry "
+author: 'Peter Barston, Jacob Crisp, Rashaad Ratliff-Brown, George Schinkel'
+output: html_document
+---
+
+<h3><center> What is the problem you want to solve?</center></h3>
+<p>COVID-19 impacted many facets of our lives in 2020 however the film/movie industry was one that probably suffered the worst fallout from the virus.</p>
+<blockquote> In 2020 the entire global theatrical and home/mobile entertainment market totaled $80.8 billion, the lowest figure since 2016 and a decline of 18% from 2019. The sharpest decline was in theatrical revenue which dropped from $42.3 billion in 2019 to $12 billion in 2020. Theatrical entertainment accounted for only 15% of the total global entertainment revenue, compared to 43% in 2019. The $2.2 billion in box office receipts in 2020 marked a 40-year low in domestic box office. In 1981 the U.S./Canada market, led by Superman II, generated $918 million in ticket sales, when the average movie ticket price had been $2.78, compared to $9.16 in 2020.” [2]</blockquote>
+<p>So the focus of our project/application is that we wanted to look at the top 1,000 movies from our past, the so-called “heavy hitters” and create a tool to help users analyze what made these movies great to in turn provide a road map to revitalize the entertainment industry. The old adage is “if it aint broke dont fix it” these movies were clearly successful, maybe if the entertainment industry looked at their formula from the past it will help pave the way for a brighter future.</p>
+
+<h3><center>Data/operation abstraction design</center></h3>
+<p>Data preparation overall was a very streamlined process, the dataset we selected from Kaggle IMDB_movies_ratings_details was extremely clean initially. Implementing a cleaning script on the data dropped our row count from 1,000 to 746 , which we still felt was ample enough data to build exceptional visualizations from. We had the following columns to work with:</p>
+<br>
+<style>
+table, th, td {border:1px solid black;}
+</style>
+<table style='width:100%'>
+  <tr>
+    <th> Column Name </th>
+    <th> Column Description</th>
+  </tr>
+  <tr>
+    <td>Name</td>
+    <td>String. Name of the movie</td>
+  </tr>
+  <tr>
+    <td>Year</td>
+    <td>Int. Year the movie came out</td>
+  </tr>
+  <tr>
+    <td>Runtime</td>
+    <td>Int. Runtime in mins</td>
+  </td>
+  <tr>
+    <td>Genre</td>
+    <td>String. 1-3 different genres separated by commas</td>
+  </tr>
+  <tr>
+    <td>Rating</td>
+    <td>Int. Rating of the movie</td>
+  </tr>
+  <tr>
+    <td>Metascore</td>
+    <td>Int. metascore of the movie</td>
+  </tr>
+  <tr>
+    <td>Timeline</td>
+    <td>String. Brief description of the movie</td>
+  </tr>
+  <tr>
+    <td>Vote</td>
+    <td>Int. How many votes the movie received</td>
+  </tr>
+  <tr>
+    <td>Gross</td>
+    <td>String. How much the movie grossed in millions</td>
+  </tr>
+</table>
+<br>
+We transformed the era column so that it bucketed movies from each era cutting down on the unique values thus giving us something to filter off of in our application. We also took the genre column which was a sting value of 1-3 different genres separated by commas. We separated this into 3 different columns so that we could then filter in the app off the primary genre of the movie. Furthermore we took the Gross column and dropped a couple of special characters so that we could convert it from a string to a numeric to further utilize it in our graphs.
+
+<h3><center>Encoding/Interaction design:</center></h3>
+We built a word cloud using the reviews, labelled ‘timeline’ in the data set. We then tokenized the corpus. We removed punctuation, stopwords, and stemmed the words. Finally, we applied colors from the Wes Anderson color palette available as a package of color pallets in R. We graphed the word cloud with a max_words setting of both 100 and 75. We limited word outputs to cut processing time and errors. On the main page the word clouds are filtered by Era the movie came out in. On the page specifically dedicated to word clouds the movies can be filtered by genre. We removed some genres that occurred infrequently in the data set, which did not allow for seamless reactivity. We believe this was the most effective way to make use of the reviews and to provide some insight into words used to describe movies in different eras and genres. It also provided interesting insights about words used by Era, and words used by Genre. 
+
+The line graph of average runtime in the dataset was first built by creating a separate data frame that summarized the runtime of movies by year. This was done by grouping the movies by year. From there, the graph added labels, breaks, theme and captions all via trial and error in ggplot2. This was an informative step and helped us identify key elements of the graph that heightened the information presented. On the main page of the app the line chart is filtered by Era the movie came out in. On the page specifically dedicated to the chart the movies can be filtered by genre. This is an effective way to visualize the effect year has on different genres - for instance, the length of animation movies have steadily gone up over time whereas adventure movies have actually seen their lengths slowly decrease on average. 
+
+The bar graph looks at the average votes given to a particular genre, the filter is then built off of the era . The graph was first built by grouping our dataset by genre then a filter function was applied to filter off the chosen era. We then chose to mutate that data based to total the mean votes for each genre. GGplot was utilized for this  visual, we used geom_col to build our graph along with labels and used a scale modifier to add commas to the y axis. On the main tab it interacts with the era drop down and also rearranges the genres based off of the one that had the highest average votes. This visualization gives the user an idea at which genres were popular during a particular time period so they can draw inferences from the data to decide which genres would be popular in today's market. If you look closely at this graph you can see that drama over the era’s has continued to be very popular overall. 
+
+The dot plot on the dot plot tab was built off the same code as the bar graph, the same pre-processing of the data was used for the final result. However, we used era as the y-axis and then the average number of votes for the x-axis. The reason this switch was made is so that we could use the era radio buttons for the interactivity of the graph. Geom_point from Gggplot was used to build the graph, also labels were utilized to add the axis labels and title to the graph. 
+The violin plot allows a user to understand the distribution of movie ratings by year/era. This is useful because one has the ability to quickly filter the violin plots by era or movie genre to quickly see where the largest volume of data points occur. A box plot was placed over the violin plots to quickly display the minimum, Q1, median Q3, and maximum values. The overall goal of the application is to help one quickly obtain insight about a dataset through strategically selected visualizations. The violin plot helps obtain that overall goal. 
+	
+<h3><center>Algorithmic Design</center></h3>
+Our best estimate is that this Shiny app runs in O(1) time. All statements are declarative in the program body. Any looping or conditional action occurs ‘under the hood’ of R. Since it is our belief that we can characterize it as acting in O(1) time there would be no additional efficiency in running that could be achieved. No additional efficiency could be achieved in R, it is possible that in the open-source code for R additional efficiency could be achieved after analysis of the code. Though, we believe that R has been soundly optimized. This means finding that additional efficiency is unnecessary and likely difficult. As an R Shiny app it is as efficient as it can be.  
+
+Further, it is unlikely that we could use standard approaches to algorithmic analysis on this program. There is no loop invariant for the code because the code does not loop. There are three elements to a loop invariant roughly stated as: (1) it is true at the beginning, (2) it is true before it runs for the last time and after it runs for the last time, (3) it produces a useful result after the last loop. This process is induction by another name and would be the best place to start an analysis. There is code somewhere in the app that does indeed fit into the criteria for a loop invariant, and could be analyzed using algorithmic techniques, but we did not write, nor can we see it.  All the functional calls to reactive elements likely have loops written in them. Again, that is under the hood. Those elements could be analyzed more easily as algorithmic. It is possible to force this analytic technique onto the app, but it would be relatively inaccurate.
+
+In terms of errors and debugging this program is sound. We eliminated all warning messages and error statements that occur at runtime in the R console. Speed for this program is dependent on personal processor speed. We felt that there was mild slowness at the opening of the app, but otherwise slow down was minimal. Again, this is attributable to processor speed. Once the app was moved to the shinyapp.io environment network latency, or lag, played a role in speed of execution. Again, that lag results in mild slowdown and the optimization steps were unclear.
+
+We made use of R, html, and CSS calls. We were able to avoid using JS in its entirety though a more interesting app may have been achieved using it. We made use of 18 packages, though tidyverse contains several packages in one. The code was repetitive in places, but that seems to be the demand for R Shiny code. It would have been better to functionalize the graphs and then call to the functions, rather than repeating graph code as different named variables. Unfortunately, it was unclear how to get a functionalized graph to behave reactively. We elected to be repetitious, and have it work, rather than produce code that may eventually work but could not be finalized. It would have also been preferable to have a single language solution, but Shiny is designed to pull from multiple languages. That can be a strength, but it is also a weakness. The package requires a large amount of previous web design knowledge to use to its fullest. That rewards the knowledgeable, but is heavily punishing to a novice. The stand out product for ease of use was not R Shiny, but shinyapp.io. It was simple to implement the hosting once the package was installed. The only snag was that shinyapp.io’s package did not seem to fully unpack tidyverse. We needed to implement a direct loading of the dplyr package to get the app to finalize and host. The errors in the log on shinyapp.io specifically indicated that the piping operator %>% was not recognized. 
+
+<h3><center>User Evaluation</center></h3>
+
+The group has identified a few areas that can demonstrate how we would conduct tests via the end user of our app. 
+
+End user interviews - the best method to ascertain whether the app is filling a need for end users is to actually go out and talk to these end users. Are needs met? Is the app user-friendly? Most importantly, is the question being asked/answered actually one that end users have? As noted by Muzner, “these validation approaches are mostly qualitative rather than quantitative, and appropriate methodologies include ethnographic field studies and semi-structured interviews”. The group would set out to determine whether people in the movie industry are actually interested in finding out data on past movies that received critical acclaim. This is an upstream end user evaluation.
+
+A downstream evaluation technique would be a simple user adoption rate. Of all users on the IMDB website that have ranked movies in the psat, how many are using our tool? Muzner does note this technique does not boast the strongest signal, as user adoption is not perfectly correlated with app quality. However, there is no product if there is no user. If our app hopes to provide some help in the discourse around movies, it must actually be used. As such, incorporating adoption rate and A/B testing into our app would allow for a quick feedback loop.
+The group knows we are not the only experts in app design and or the universe of movie critics. How can we leverage authorities in these areas to drive improvements in our app? We would do so by considering known perceptual and cognitive principles via “methodologies such as heuristic evaluation and expert review."  As Muzner notes, these are a way to systematically ensure that no known guidelines are being violated by the design. Are we not considering the right subset of movies? Are we not presenting the information in a cognitively attractive way? Experts in these fields can help us understand.
+The most ambitious end user evaluation method we would take on would be to “observe and document how the target audience uses the deployed system as part of their real-world workflow, typically in the form of a longer-term field study.” Muzner notes this is a demanding but fruitful area of investigation as it provides the most organic views into end users. End users can talk all they want about how useful our app is, but if we don’t observe their workflow, we will never make improvements that stick.
+
+<h3><center>Future Work</center></h3>
+In terms of code changes we might make in the future there are two (1) functionalizing the graphs to reduce the number of code lines, (2) apply additional aesthetic work to the app pages.  
+
+As mentioned in the algorithmic analysis section, we believe the graphs could have been written as functions taking an input and returning an output. This would have allowed us to write the code for the graph once and then taken the reactive input as the function’s input. This would have reduced the size of the code by about a quarter. It also would have made the code more readable. We did not allow the perfect to be the enemy of the good, and were happy with a functioning app that may have been slightly longer than necessary. However, with more time we would work to functionalize the graphs. 
+
+There were several aesthetic aspects we considered, but were unable to address due to time constraints. Our initial plan was to have a column  running down the side in black with the main tab in the yellow color we used. Unfortunately, getting Shiny to recognize the div tag appropriately and size things correctly proved to be too difficult. We also would have preferred to change the text font of the choices in all five of our tabs. Implementing a solution to that font change bloated the code. Also, we felt it was not a good use of programmer time when other elements required attention. It was a secondary issue to change font and a primary issue to make the reactive elements react appropriately. The stylization of the elements would be a process of constant revision were this a live app, and we feel that is the case with this app. 
+
+<h3><center>Works Cited</center></h3>
+
+Viradiya, Preet. “Imdb_movies_ratings_details.” Kaggle, 23 May 2021, www.kaggle.com/preetviradiya/imdb-movies-ratings-details. 
+<br>
+<br>
+Adgate, Brad. “The Impact Covid-19 Had on the Entertainment Industry in 2020.” Forbes, Forbes Magazine, 13 Apr. 2021, www.forbes.com/sites/bradadgate/2021/04/13/the-impact-covid-19-had-on-the-entertainment-industry-in-2020/?sh=2271cb38250f. 
+<br>
+<br>
+Munzner, Tamara. “A Nested Model for Visualization Design and Validation.” IEEE transactions on visualization and computer graphics 15.6 (2009): 921–928. Web.

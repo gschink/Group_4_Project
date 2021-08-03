@@ -1,0 +1,13 @@
+name: group4_app
+title: group4_app
+username:
+account: george-schinkel
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 4445002
+bundleId: 4877158
+url: https://george-schinkel.shinyapps.io/group4_app/
+when: 1627827732.34143
+lastSyncTime: 1627827732.34143
+asMultiple: FALSE
+asStatic: FALSE
